@@ -25,6 +25,7 @@ export const checkCollision: checkCollisionType = (item, allItems) => {
                     id: String(id),
                     status: isOverlapping
                 }
+                console.log("cii", collided, isOverlapping)
                 return isOverlapping
             }
         });
