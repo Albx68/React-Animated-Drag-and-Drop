@@ -1,0 +1,2 @@
+export type checkCollisionType = (item: itemRef, allItems: React.MutableRefObject<HTMLDivElement[] | null[]>) => { id: -1, status: boolean }
+export type itemRef = React.MutableRefObject<HTMLDivElement | null>
