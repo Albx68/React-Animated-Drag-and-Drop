@@ -8,6 +8,7 @@ const Board = () => {
     const targetRefs = useRef<HTMLDivElement[] | null[]>([])
     const draggableRef = useRef<HTMLDivElement | null>(null)
     const [collision, setCollision] = useState({ id: -1, status: false })
+    const [dragSuccess, setDragSuccess] = useState(false)
     const checkCollision: checkCollisionType = (item, allItems) => {
         if (item.current) {
             const divRect = item.current.getBoundingClientRect();
@@ -41,7 +42,9 @@ const Board = () => {
 
     }
     const handleCollisionEnd = () => {
-        setCollision({ id: -1, status: false })
+        if (collision.status) {
+            setDragSuccess(true)
+        }
     }
 
     return (
@@ -50,13 +53,16 @@ const Board = () => {
                 {Array.from({ length: 4 }, (_, index) => index + 1).map((el, idx) => {
                     return <motion.div data-key={idx} ref={(ref) => {
                         targetRefs.current[idx] = ref;
-                    }} key={el} className={twMerge("h-32 w-32 bg-emerald-200 rounded-lg", collision.id === Number(idx) ? "border-orange-400 border-dashed border-8" : "border-none")}>
-
+                    }} key={el} layoutId={collision.id === Number(idx) ? "alien" : ""} className={twMerge("flex justify-center items-center h-32 w-32 bg-emerald-200 rounded-lg  text-7xl", collision.id === Number(idx) ? "border-orange-400 border-dashed border-8 " : "border-none")}>
+                        <motion.div animate={{
+                            opacity: dragSuccess ? 1 : 0.5,
+                            //  x: dragSuccess ? 40 : 0.5 
+                        }}>{collision.id === Number(idx) ? '👾' : ''}</motion.div>
                     </motion.div>
                 })}
             </div>
             <div className="">
-                <motion.div onDrag={() => checkCollision(draggableRef, targetRefs)} onDragEnd={() => handleCollisionEnd()} drag dragSnapToOrigin ref={draggableRef} className="cursor-grab active:cursor-grabbing h-32 w-32 flex justify-center items-center bg-emerald-500 rounded-lg text-7xl">👾</motion.div>
+                {!dragSuccess && <motion.div layoutId="alien" onDrag={() => checkCollision(draggableRef, targetRefs)} onDragEnd={() => handleCollisionEnd()} drag dragSnapToOrigin ref={draggableRef} className="cursor-grab active:cursor-grabbing text-7xl">👾</motion.div>}
             </div>
         </div>
     )
