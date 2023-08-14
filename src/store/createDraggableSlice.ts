@@ -8,7 +8,8 @@ interface DraggableSlice {
     setActiveDraggableId: (id: number | string) => void,
     activeDraggableContent: ReactNode,
     setActiveDraggableContent: (children: ReactNode) => void
-
+    draggableChildrenMap: { id: ReactNode }
+    setDraggableChildrenMap: (id: string | number, children: ReactNode) => void
 }
 
 
@@ -18,5 +19,7 @@ export const createDraggableSlice = (set: StoreApi<DraggableSlice>['setState']) 
     activeDraggableId: -1,
     setActiveDraggableId: (id: number | string) => set(() => ({ activeDraggableId: id })),
     activeDraggableContent: [],
-    setActiveDraggableContent: (children: ReactNode) => set(() => ({ activeDraggableContent: children }))
+    setActiveDraggableContent: (children: ReactNode) => set(() => ({ activeDraggableContent: children })),
+    draggableChildrenMap: {},
+    setDraggabableChildrenMap: (id: string, children: ReactNode) => set((state) => ({ draggableChildrenMap: { ...state.draggableChildrenMap, [id]: [children] } }))
 })

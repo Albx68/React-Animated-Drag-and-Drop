@@ -9,18 +9,17 @@ function App() {
   console.log("activeDraggableContent", activeDraggableContent)
   return (
     <>
-      {activeDraggableContent}
       <div className='flex gap-8'>
-        <DragContainer dataKey={1} >
-          <Draggable snapToOrigin={true} dataKey={1} >
+        <DragContainer dataKey={'1'} >
+          <Draggable snapToOrigin={true} dataKey={'1'} >
             <div className='text-7xl  flex justify-center items-center' >👾</div>
           </Draggable>
         </DragContainer>
-        <DragContainer dataKey={1}>
+        <DragContainer dataKey={'2'}>
 
         </DragContainer>
-        <DragContainer dataKey={1}>
-          <Draggable snapToOrigin={true} dataKey={1}>
+        <DragContainer dataKey={'3'}>
+          <Draggable snapToOrigin={true} dataKey={'1'}>
             <div className='text-7xl flex justify-center items-center' >🎃</div>
           </Draggable>
         </DragContainer>

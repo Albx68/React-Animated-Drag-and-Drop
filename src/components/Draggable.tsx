@@ -1,8 +1,8 @@
 import { motion } from "framer-motion"
-import { ReactNode, useEffect, useRef, useState } from "react"
+import { ReactNode, createRef, useRef, } from "react"
 import useDraggableStore from "../store/useDraggableStore"
 
-export type checkCollisionType = (item: itemRef, allItems: React.MutableRefObject<HTMLDivElement[] | null[]>) => void
+export type checkCollisionType = (item: itemRef, allItems: React.MutableRefObject<HTMLDivElement[] | null[]>, type: 'DRAG_END') => void
 export type itemRef = React.MutableRefObject<HTMLDivElement | null>
 
 type Draggable = {
@@ -13,31 +13,30 @@ type Draggable = {
 
 const Draggable = ({ snapToOrigin = true, children, dataKey }: Draggable) => {
     const draggableRef = useRef(null)
-    const { draggableContainers, activeDraggableId, setActiveDraggableId, setActiveDraggableContent } = useDraggableStore(state => state)
+    const { draggableContainers, activeDraggableId, activeDraggableContent, setActiveDraggableId, setActiveDraggableContent, setDraggabableChildrenMap } = useDraggableStore(state => state)
     console.log("draggableContainer", draggableContainers)
-    const checkCollision: checkCollisionType = (item, allItems) => {
+    const checkCollision: checkCollisionType = (item, allItems, type = "DRAG_END") => {
         if (item.current) {
             const divRect = item.current.getBoundingClientRect();
-
+            console.log("item.current", item.current)
             allItems.forEach((element) => {
                 if (element) {
-                    const id = element.getAttribute('data-key')
-                    const containerRect = element.getBoundingClientRect();
+                    const id = element.dataKey
+
+                    // const elementRef = element.createRef()
+                    console.log("id", id)
+                    const elementRef = element.current
+                    const containerRect = elementRef.getBoundingClientRect();
                     const isOverlapping = !(
                         divRect.right < containerRect.left ||
                         divRect.left > containerRect.right ||
                         divRect.bottom < containerRect.top ||
                         divRect.top > containerRect.bottom
                     );
-                    const collided: {
-                        id: number
-                        status: boolean
-                    } = {
-                        id: Number(id),
-                        status: isOverlapping
-                    }
 
                     if (isOverlapping) {
+                        setDraggabableChildrenMap(id, activeDraggableContent)
+                        // filterPrevDraggable()
                     }
 
                 }
@@ -46,18 +45,18 @@ const Draggable = ({ snapToOrigin = true, children, dataKey }: Draggable) => {
         }
 
     }
-    console.log("active draggable id", activeDraggableId)
     return <motion.div
         drag
         dragSnapToOrigin={snapToOrigin}
         data-key={dataKey}
         onDragStart={() => {
             setActiveDraggableId(dataKey)
-            setActiveDraggableContent({ ...children, dataKey })
+            setActiveDraggableContent({ ...children, dataKey, })
             console.log("drag start", children)
         }}
+
         onDragEnd={() => {
-            checkCollision(draggableRef, draggableContainers)
+            checkCollision(draggableRef, draggableContainers, "DRAG_END")
         }}
         dragElastic={0}
         ref={(ref) => {
